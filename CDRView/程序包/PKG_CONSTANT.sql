@@ -19,11 +19,12 @@ FUNCTION OUTORDER_DATASET_CODE RETURN varchar2;
 --CDR数据集中的病历文档名称
 V_EMR_DATASET_NAME CONSTANT varchar2(50):='病历概要';
 FUNCTION EMR_DATASET_NAME RETURN varchar2;
---
---病人医嘱类别
-V_Order_Item_Type_Name CONSTANT varchar2(50):='药品类医嘱';
-FUNCTION Order_Item_Type_Name RETURN varchar2;
---
+--病人药品类医嘱
+V_drug_Order CONSTANT varchar2(50):='药品类医嘱';
+FUNCTION Drug_Order RETURN varchar2;
+--病人除药品类医嘱、检验类医嘱、检查类医嘱之外的其他医嘱
+V_other_Order CONSTANT varchar2(50):='药品类医嘱,检查类医嘱,检验类医嘱';
+FUNCTION Other_Order RETURN varchar2;
 end pkg_constant;
 
 /
@@ -61,11 +62,16 @@ FUNCTION EMR_DATASET_NAME RETURN varchar2 is
 begin
 	return V_EMR_DATASET_NAME;
 end EMR_DATASET_NAME;
---病人医嘱类别
-FUNCTION Order_Item_Type_Name RETURN varchar2 is
+--病人药品类医嘱
+FUNCTION Drug_Order RETURN varchar2 is
 begin
-	return V_Order_Item_Type_Name;
-end Order_Item_Type_Name;
+	return V_drug_Order;
+end Drug_Order;
+----病人除药品类医嘱、检验类医嘱、检查类医嘱之外的其他医嘱
+FUNCTION Other_Order RETURN varchar2 is
+begin
+	return V_other_Order;
+end Other_Order;
 
 end pkg_constant;
 
