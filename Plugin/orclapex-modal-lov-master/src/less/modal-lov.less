@@ -1,0 +1,78 @@
+// Styling for the clear search icon
+.t-Form-inputContainer, .a-GV-columnItem {
+  .search-clear {
+    order: 3;
+    right: 20px;
+    align-self: center;
+    height: 14px;
+    margin-right: -14px;
+    font-size: 14px;
+    cursor: pointer;
+    z-index: 1;
+  }
+}
+.a-GV-columnItem {
+  .u-Processing.u-Processing--inline {
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+    z-index: 1;
+  }
+}
+
+
+.modal-lov-button {
+  order: 4;
+}
+
+// Styling for the modal LOV
+.modal-lov {
+  display: flex;
+  flex-direction: column;
+  .no-padding {
+    padding: 0;
+  }
+  .t-Form-fieldContainer{
+    flex: 0;
+  }
+  .t-DialogRegion-body {
+    flex: 1;
+    overflow-y: auto;
+  }
+  .u-Processing.u-Processing--inline {
+    margin: auto;
+    position: absolute;
+    top: 0; left: 0; bottom: 0; right: 0;
+  }
+  .t-Form-inputContainer input.modal-lov-item {
+    margin: 0;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding-right: 35px !important;
+  }
+
+  .modal-lov-table {
+    .t-Report-cell {
+      cursor: pointer;
+    }
+    .hover .t-Report-cell {
+      background-color: inherit!important;
+    }
+    .mark .t-Report-cell {
+      background-color: inherit!important;
+    }
+  }
+
+  .t-ButtonRegion-col {
+    width: 33%;
+  }
+}
+
+// Support for Interactive Grid
+.a-GV-columnItem .apex-item-group {
+  width: 100%;
+}
+.a-GV-columnItem .oj-form-control { 
+  max-width: none;
+  margin-bottom: 0;
+}
