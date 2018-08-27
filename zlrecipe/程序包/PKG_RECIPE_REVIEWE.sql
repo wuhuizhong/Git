@@ -29,6 +29,10 @@ CREATE OR REPLACE PACKAGE PKG_RECIPE_REVIEWE IS
   PROCEDURE GET_RECIPES_REVIEWE_RESULT(PID_IN    IN NUMBER,
                                        PVID_IN   IN NUMBER,
                                        RESULTOUT OUT SYS_REFCURSOR);
+   --查询病人处方所有审核结果
+  PROCEDURE GET_RECIPES_REVIEWE_RESULT_ALL(PID_IN    IN NUMBER,
+                                           PVID_IN   IN NUMBER,
+                                           RESULTOUT OUT SYS_REFCURSOR);
                                        
   --编辑审核方案
   PROCEDURE EDIT_REVIEWE_SOLUTION(INPUT_IN IN CLOB, EDIT_TYPE_IN IN NUMBER);    
@@ -60,12 +64,14 @@ CREATE OR REPLACE PACKAGE PKG_RECIPE_REVIEWE IS
     Procedure CREATE_USER(
               V_USER_ID in varchar2,
               V_WEB_PASSWORD in varchar2,
-              V_STATUS_IN in NUMBER
+              N_STATUS_IN in NUMBER,
+              N_ADMIN IN NUMBER
               );
    -- 修改apex用户
    Procedure EDIT_USER(
        p_user_name in varchar2,
-       status in varchar2
+       status in NUMBER,
+       N_ADMIN IN NUMBER
         );
  --科室启用配置
  Procedure DEPT_START( DEPT_NAME_IN in varchar2,  USER_NAME_IN in varchar2);
@@ -1189,6 +1195,7 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
     --头注释结束-----------------------------------------------------------------------------------------
 		T_当前时间   DATE;
 	BEGIN
+      
 		T_当前时间   := SYSDATE;
 		IF V_USER_NAME IS NOT NULL    AND V_USER_CODE IS NOT NULL THEN
 			IF N_CHANGE = 1 THEN
@@ -1227,6 +1234,7 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 					V_USER_CODE
 					,V_WEB_PASSWORD
 					,V_USER_STATUS
+          ,N_IS_ADMIN
 				);
 			ELSIF N_CHANGE = 2 THEN
        -- 修改药师 
@@ -1251,6 +1259,7 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 				EDIT_USER(
 					V_USER_CODE
 					,V_USER_STATUS
+          ,N_IS_ADMIN
 				);
 			END IF;
 		END IF;
@@ -1264,7 +1273,8 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 	PROCEDURE CREATE_USER (
 		V_USER_ID        IN VARCHAR2
 		,V_WEB_PASSWORD   IN VARCHAR2
-		,V_STATUS_IN      IN NUMBER
+		,N_STATUS_IN      IN NUMBER
+    ,N_ADMIN          IN NUMBER
 	) IS
 -- 新增药师
 --user_id  his 用户id
@@ -1272,12 +1282,13 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 		V_STATUS          VARCHAR2(10);
 		V_WORKSPACE_ID    VARCHAR2(50);
 		V_DEFAULT_SCHEM   VARCHAR2(50);
+    V_P_DEVELOPER_PRIVS VARCHAR2(200);
 	BEGIN
 		V_DEFAULT_SCHEM   := 'zlrecipe';
 		V_WORKSPACE_ID    := APEX_UTIL.FIND_SECURITY_GROUP_ID(P_WORKSPACE   => 'ZLAPEXDEV');
 		APEX_UTIL.SET_SECURITY_GROUP_ID(P_SECURITY_GROUP_ID   => V_WORKSPACE_ID);
 		SELECT DECODE(
-			V_STATUS_IN
+			N_STATUS_IN
 			,0
 			,'Y'
 			,1
@@ -1285,11 +1296,21 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 		)
 		  INTO V_STATUS
 		  FROM DUAL;
+    --判断新增是否是管理员
+    if N_ADMIN=1 then
+      --是管理员
+      V_P_DEVELOPER_PRIVS:='ADMIN:CREATE:DATA_LOADER:EDIT:HELP:MONITOR:SQL' ;
+      else
+      --不是管理员  
+      V_P_DEVELOPER_PRIVS :='' ;
+    end if; 
+    
 		APEX_UTIL.CREATE_USER(
   -- P_USER_NAME 等于 recipe_user.user_code
 			P_USER_NAME        => V_USER_ID
 			,P_WEB_PASSWORD     => V_WEB_PASSWORD
 			,P_DEFAULT_SCHEMA   => V_DEFAULT_SCHEM
+      ,p_developer_privs => V_P_DEVELOPER_PRIVS
 			,P_ACCOUNT_LOCKED   => V_STATUS
 		);
 	EXCEPTION
@@ -1301,12 +1322,12 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 -- 修改人员 apex用户 
 	PROCEDURE EDIT_USER (
 		P_USER_NAME   IN VARCHAR2
-		,STATUS        IN VARCHAR2
+		,STATUS        IN NUMBER
+    ,N_ADMIN      IN NUMBER
 	) IS
 -- 新增药师管理
 --user_id  his 用户id
 
-    --V_WORKSPACE_ID VARCHAR2(50);
 		V_STATUS                         VARCHAR2(10);
 		L_USER_ID                        NUMBER;
 		L_WORKSPACE                      VARCHAR2(255);
@@ -1325,16 +1346,16 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 		L_PERSON_TYPE                    VARCHAR2(1);
 		L_DEFAULT_SCHEMA                 VARCHAR2(30);
 		L_GROUPS                         VARCHAR2(1000);
-		L_DEVELOPER_ROLE                 VARCHAR2(60);
+		L_DEVELOPER_ROLE                 VARCHAR2(200);
 		L_DESCRIPTION                    VARCHAR2(240);
 		L_ACCOUNT_EXPIRY                 DATE;
 		L_ACCOUNT_LOCKED                 VARCHAR2(1);
 		L_FAILED_ACCESS_ATTEMPTS         NUMBER;
 		L_CHANGE_PASSWORD_ON_FIRST_USE   VARCHAR2(1);
 		L_FIRST_PASSWORD_USE_OCCURRED    VARCHAR2(1);
+    
+    V_WORKSPACE_ID                   number;
 	BEGIN 
-   -- V_WORKSPACE_ID   := APEX_UTIL.FIND_SECURITY_GROUP_ID(P_WORKSPACE   => 'ZLAPEXDEV');
-   -- APEX_UTIL.SET_SECURITY_GROUP_ID(P_SECURITY_GROUP_ID   => V_WORKSPACE_ID);  
 		SELECT DECODE(
 			STATUS
 			,0
@@ -1344,6 +1365,10 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 		)
 		  INTO V_STATUS
 		  FROM DUAL;
+      
+     --获取 L_USER_ID
+    V_WORKSPACE_ID    := APEX_UTIL.FIND_SECURITY_GROUP_ID(P_WORKSPACE   => 'ZLAPEXDEV');
+		APEX_UTIL.SET_SECURITY_GROUP_ID(P_SECURITY_GROUP_ID   => V_WORKSPACE_ID);
 		L_USER_ID   := APEX_UTIL.GET_USER_ID(P_USER_NAME);
 		APEX_UTIL.FETCH_USER(
 			P_USER_ID                        => L_USER_ID
@@ -1368,6 +1393,14 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 			,P_CHANGE_PASSWORD_ON_FIRST_USE   => L_CHANGE_PASSWORD_ON_FIRST_USE
 			,P_FIRST_PASSWORD_USE_OCCURRED    => L_FIRST_PASSWORD_USE_OCCURRED
 		);
+       --判断是否是管理员    
+    if N_ADMIN=1 then
+      --是管理员
+      L_DEVELOPER_ROLE:='ADMIN:CREATE:DATA_LOADER:EDIT:HELP:MONITOR:SQL' ;
+      else
+      --不是管理员  
+      L_DEVELOPER_ROLE :='' ;
+    end if; 
 		APEX_UTIL.EDIT_USER(
 			P_USER_ID                        => L_USER_ID
 			,P_USER_NAME                      => P_USER_NAME
@@ -1587,13 +1620,19 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
     --版本记录：版本号+时间+修改者+修改需求描述
     --头注释结束-----------------------------------------------------------------------------------------
 		V_审核日期   VARCHAR2(10);
+    V_PHARMACIST_ID VARCHAR2(1000);
 	BEGIN
 		V_审核日期   := TO_CHAR(
 			SYSDATE
 			,'yyyymmdd'
 		);
+    --查询当前在岗药师,获取药师code 串
+    select 
+      max(listagg(t.pharmacist_id,',') Within Group(order by t.pharmacist_id)) into V_PHARMACIST_ID
+    from PHARMACIST_WORK_RECORD t where t.register_date>=V_审核日期 ;
 		OPEN RESULTOUT FOR SELECT DISTINCT ORDER_ID
 		                                  ,ORDER_GROUP_ID
+                                      ,nvl(PHARMACIST_ID,V_PHARMACIST_ID)
 		                                  ,CASE
 				WHEN A.REVIEWE_RESULT =-1  THEN --未通过
 					NVL(
@@ -1635,7 +1674,60 @@ VARCHAR2(500) PATH '//info[@name="超量说明"]/@value',用药目的 VARCHAR2(400) PATH
 				,LOG_CONTENT_IN   => PID_IN || ',' || PVID_IN || CHR(10) || SQLERRM
 			);
 	END GET_RECIPES_REVIEWE_RESULT;
-
+  
+ --查询病人所有处方审方结果
+  PROCEDURE GET_RECIPES_REVIEWE_RESULT_ALL (
+    PID_IN      IN NUMBER
+    ,PVID_IN     IN NUMBER
+    ,RESULTOUT   OUT SYS_REFCURSOR
+  ) IS
+    --头注释开始-----------------------------------------------------------------------------------------
+    --方法名称：查询病人所有处方审方结果
+    --功能说明：查询指定医嘱id的审核结果：-1 未通过(审核中也算未通过),1 通过
+    --入参说明：[{"病人id":123123,"就诊id":"2123"}] pid:病人id,pvid：就诊id，门诊挂号单号，住院：主页id
+    --出参说明：病人单日医嘱审核结果，逐条医嘱返回
+    --    [{"病人ID:"：123123,"就诊ID":123123}]
+    --编 写 者：吴开波
+    --编写时间：2018-08-27
+    --版本记录：版本号+时间+修改者+修改需求描述
+    --头注释结束-----------------------------------------------------------------------------------------
+    V_审核日期   VARCHAR2(10);
+  BEGIN
+    V_审核日期   := TO_CHAR(
+      SYSDATE
+      ,'yyyymmdd'
+    );
+    OPEN RESULTOUT FOR SELECT DISTINCT A.ORDER_ID
+                                      ,A.ORDER_GROUP_ID
+                                      ,A.PHARMACIST_ID
+                                      ,A.REVIEWE_COMMENT
+                                      ,A.REVIEWE_RESULT
+                                      ,B.RESULT_NAME
+                                      ,A.DR_REFUSE_COMMENT
+                         FROM REVIEWE_RECIPES A,V_REVIEWE_RESULT B
+                        WHERE A.PID = PID_IN
+                          AND A.PVID = PVID_IN
+                          AND A.REVIEWE_RESULT=B.result_code ;
+    PKG_RECIPE_REVIEWE.INSERT_LOG(
+      LOG_TITILE_IN    => 'HIS查询所有审方结果ALL'
+      ,LOG_TYPE_IN      => 'T'
+      ,LOG_CONTENT_IN   => PID_IN || ',' || PVID_IN
+    );
+    --服务方式调用时，返回JSON
+    APEX_JSON.OPEN_OBJECT;
+    APEX_JSON.WRITE(
+      'recipes'
+      ,RESULTOUT
+    );
+    APEX_JSON.CLOSE_OBJECT;
+  EXCEPTION
+    WHEN OTHERS THEN
+      PKG_RECIPE_REVIEWE.INSERT_LOG(
+        LOG_TITILE_IN    => 'HIS查询所有审方结果ALL'
+        ,LOG_TYPE_IN      => 'E'
+        ,LOG_CONTENT_IN   => PID_IN || ',' || PVID_IN || CHR(10) || SQLERRM
+      );
+  END GET_RECIPES_REVIEWE_RESULT_ALL;
   --记录运行日志
 	PROCEDURE INSERT_LOG (
 		LOG_TITILE_IN    IN VARCHAR2
