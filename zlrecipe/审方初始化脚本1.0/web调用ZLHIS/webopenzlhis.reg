@@ -1,0 +1,16 @@
+Windows Registry Editor Version 5.00
+
+[HKEY_CLASSES_ROOT\ZLHISWeb]
+"URL Protocol"="C:\\appsoft\\zlweb.bat"
+@="ZLHISWeb"
+
+[HKEY_CLASSES_ROOT\ZLHISWeb\DefaultIcon]
+@="C:\\appsoft\\zlweb.bat,1"
+
+[HKEY_CLASSES_ROOT\ZLHISWeb\shell]
+
+[HKEY_CLASSES_ROOT\ZLHISWeb\shell\open]
+
+[HKEY_CLASSES_ROOT\ZLHISWeb\shell\open\command]
+@="\"C:\\appsoft\\zlweb.bat\" \"%1\""
+
