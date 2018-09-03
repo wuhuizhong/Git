@@ -108,9 +108,9 @@ CREATE OR REPLACE Package Body Pkg_Status_Record Is
     v_Rec_Id     Varchar2(36);
     v_Parts_Name Varchar2(100);
     v_Detail_Id  Varchar2(36);
+    --v_Reject_Detail_Id Varchar2(36);
   Begin
     v_Rec_Id := Sys_Guid();
-    --insert into PATI_INFO_TEMP(PID,JSON_CONTENT) values (9999,input_in);
     For r_Basic In (Select Pid, Pat_Name, Sex, Birth, Age, Pvid, Visit_Type, Envr_Id, Visit_Time, Visit_Identifier,
                            Marry_Cnds, Visit_Dept, Visit_Doc, Rec_Time, Recorder, Recorder_Id
                     From Json_Table(Input_In, '$.rec_info[*]' Columns Pid Varchar2(36) Path '$."pid"',
@@ -172,15 +172,49 @@ CREATE OR REPLACE Package Body Pkg_Status_Record Is
                   a.Related_Parts_Id = r_Detail.Status_Parts_Id And a.Status_Situation In (1, 2, 3);
           End If;
         
-          Insert Into Pat_Status
-            (Pat_Status_Id, Pid, Status_Id, Status_Name, Status_Prop, Status_Situation, Status_Begin_Date,
-             Status_End_Date, Related_Parts_Id, Related_Parts, Last_Detail_Id)
-            Select Sys_Guid(), r_Basic.Pid, r_Detail.Status_Id, a.Status_Name, a.Status_Prop, r_Detail.Status_Situation,
-                   Decode(r_Detail.Begin_Time, Null, Null, To_Date(r_Detail.Begin_Time, 'yyyy-mm-dd hh24:mi:ss')),
-                   Decode(r_Detail.End_Time, Null, Null, To_Date(r_Detail.End_Time, 'yyyy-mm-dd hh24:mi:ss')),
-                   r_Detail.Status_Parts_Id, v_Parts_Name, v_Detail_Id
-            From Status_List A
-            Where a.Status_Id = r_Detail.Status_Id;
+          If r_Detail.Status_Situation = 1 Or r_Detail.Status_Situation = 2 Then
+            Insert Into Pat_Status
+              (Pat_Status_Id, Pid, Status_Id, Status_Name, Status_Prop, Status_Situation, Status_Begin_Date,
+               Status_End_Date, Related_Parts_Id, Related_Parts, Last_Detail_Id)
+              Select Sys_Guid(), r_Basic.Pid, r_Detail.Status_Id, a.Status_Name, a.Status_Prop,
+                     r_Detail.Status_Situation,
+                     Decode(r_Detail.Begin_Time, Null, Null, To_Date(r_Detail.Begin_Time, 'yyyy-mm-dd hh24:mi:ss')),
+                     Decode(r_Detail.End_Time, Null, Null, To_Date(r_Detail.End_Time, 'yyyy-mm-dd hh24:mi:ss')),
+                     r_Detail.Status_Parts_Id, v_Parts_Name, v_Detail_Id
+              From Status_List A
+              Where a.Status_Id = r_Detail.Status_Id;
+          End If;
+        
+          /*--处理互斥状态
+          If r_Detail.Status_Situation = 1 Or r_Detail.Status_Situation = 2 Then
+            --主记录为有时,默认保存对应互斥状态为无
+            For r_Reject In (Select a.Status_Id, a.Status_Name, a.Status_Prop
+                             From Status_List A, Reject_Status B
+                             Where a.Status_Id = b.Reject_Status_Id And b.Status_Id = r_Detail.Status_Id) Loop
+              v_Reject_Detail_Id := Sys_Guid();
+              Insert Into Pat_Status_Detail
+                (Detail_Id, Status_Id, Rec_Id, Status_Name, Status_Prop, Status_Situation, Status_Begin_Date,
+                 Status_End_Date)
+                Select v_Reject_Detail_Id, r_Reject.Status_Id, v_Rec_Id, r_Reject.Status_Name, r_Reject.Status_Prop, 3,
+                       Decode(r_Detail.Begin_Time, Null, Null, To_Date(r_Detail.Begin_Time, 'yyyy-mm-dd hh24:mi:ss')),
+                       Decode(r_Detail.End_Time, Null, Null, To_Date(r_Detail.End_Time, 'yyyy-mm-dd hh24:mi:ss'))
+                From Dual;
+            
+              Delete From Pat_Status A
+              Where a.Pid = r_Basic.Pid And a.Status_Id = r_Reject.Status_Id And a.Related_Parts_Id Is Null And
+                    a.Status_Situation In (1, 2, 3);
+            
+              Insert Into Pat_Status
+                (Pat_Status_Id, Pid, Status_Id, Status_Name, Status_Prop, Status_Situation, Status_Begin_Date,
+                 Status_End_Date, Last_Detail_Id)
+                Select Sys_Guid(), r_Basic.Pid, r_Reject.Status_Id, a.Status_Name, a.Status_Prop, 3,
+                       Decode(r_Detail.Begin_Time, Null, Null, To_Date(r_Detail.Begin_Time, 'yyyy-mm-dd hh24:mi:ss')),
+                       Decode(r_Detail.End_Time, Null, Null, To_Date(r_Detail.End_Time, 'yyyy-mm-dd hh24:mi:ss')),
+                       v_Reject_Detail_Id
+                From Status_List A
+                Where a.Status_Id = r_Detail.Status_Id;
+            End Loop;
+          End If;*/
         End If;
       End Loop;
     End Loop;
@@ -256,12 +290,14 @@ CREATE OR REPLACE Package Body Pkg_Status_Record Is
             Where a.Pid = r_Basic.Pid And a.Status_Id = v_Status_Id And a.Related_Parts_Id Is Null And
                   a.Status_Situation In (1, 2, 3);
           
-            Insert Into Pat_Status
-              (Pat_Status_Id, Pid, Status_Id, Status_Name, Status_Prop, Status_Situation, Last_Detail_Id)
-              Select Sys_Guid(), r_Basic.Pid, v_Status_Id, a.Status_Name, a.Status_Prop, r_Detail.Status_Situation,
-                     v_Detail_Id
-              From Status_List A
-              Where a.Status_Id = v_Status_Id;
+            If r_Detail.Status_Situation = 1 Or r_Detail.Status_Situation = 2 Then
+              Insert Into Pat_Status
+                (Pat_Status_Id, Pid, Status_Id, Status_Name, Status_Prop, Status_Situation, Last_Detail_Id)
+                Select Sys_Guid(), r_Basic.Pid, v_Status_Id, a.Status_Name, a.Status_Prop, r_Detail.Status_Situation,
+                       v_Detail_Id
+                From Status_List A
+                Where a.Status_Id = v_Status_Id;
+            End If;
           End If;
         End If;
       End Loop;
