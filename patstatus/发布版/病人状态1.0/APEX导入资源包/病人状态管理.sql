@@ -27,7 +27,7 @@ prompt APPLICATION 112 - 病人状态管理
 -- Application Export:
 --   Application:     112
 --   Name:            病人状态管理
---   Date and Time:   14:53 星期四 8月 30, 2018
+--   Date and Time:   09:39 星期一 9月 3, 2018
 --   Exported By:     WKB
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -68,7 +68,7 @@ prompt APPLICATION 112 - 病人状态管理
 --     Globalization:
 --     Reports:
 --     E-Mail:
---   Supporting Objects:  Included
+--   Supporting Objects:  Excluded
 
 prompt --application/delete_application
 begin
@@ -109,6 +109,7 @@ wwv_flow_api.create_flow(
 ,p_flow_version=>unistr('\53D1\884C\7248 1.0')
 ,p_flow_status=>'AVAILABLE_W_EDIT_LINK'
 ,p_flow_unavailable_text=>unistr('\6B64\5E94\7528\7A0B\5E8F\5728\6B64\65F6\95F4\4E0D\53EF\7528\3002')
+,p_build_status=> 'RUN_ONLY'
 ,p_exact_substitutions_only=>'Y'
 ,p_browser_cache=>'N'
 ,p_browser_frame=>'D'
@@ -118,8 +119,8 @@ wwv_flow_api.create_flow(
 ,p_auto_time_zone=>'N'
 ,p_substitution_string_01=>'APP_NAME'
 ,p_substitution_value_01=>unistr('\75C5\4EBA\72B6\6001\7BA1\7406')
-,p_last_updated_by=>'WKB'
-,p_last_upd_yyyymmddhh24miss=>'20180830145234'
+,p_last_updated_by=>'LH'
+,p_last_upd_yyyymmddhh24miss=>'20180903090553'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_files_version=>3
 ,p_ui_type_name => null
@@ -9825,6 +9826,7 @@ wwv_flow_api.create_plugin(
 ,p_render_function=>'f_render_plugin'
 ,p_standard_attributes=>'REGION:REQUIRED:ONLOAD'
 ,p_substitute_attributes=>true
+,p_reference_id=>31493071612384588509
 ,p_subscribe_plugin_settings=>true
 ,p_help_text=>'Dynamic Action Plugin that enables you to declaratively define IG toolbar buttons.'
 ,p_version_identifier=>'1.0.2'
@@ -9836,7 +9838,7 @@ wwv_flow_api.create_plugin(
 ,p_files_version=>13
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118233786106579168)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>1
@@ -9850,63 +9852,63 @@ wwv_flow_api.create_plugin_attribute(
 ,p_help_text=>'Choose one of default IG toolbar groups. With this plugin you can add button to the start or end of the group.'
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115611521578210485)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118234117362579169)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>10
 ,p_display_value=>'1. Search Box Group'
 ,p_return_value=>'search'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115608507652210475)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118234647800579170)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>20
 ,p_display_value=>'2. Saved Reports Group'
 ,p_return_value=>'reports'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115609014827210479)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118235136954579170)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>30
 ,p_display_value=>'3. View Switch Group'
 ,p_return_value=>'views'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115609592324210480)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118235633441579171)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>40
 ,p_display_value=>'4. Actions Menu Group'
 ,p_return_value=>'actions1'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115610033282210481)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118236133391579172)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>50
 ,p_display_value=>'5. Edit & Save Group'
 ,p_return_value=>'actions2'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115610512751210482)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118236689532579172)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>60
 ,p_display_value=>'6. Add Row Group'
 ,p_return_value=>'actions3'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115611074629210484)
-,p_plugin_attribute_id=>wwv_flow_api.id(115608115635210467)
+ p_id=>wwv_flow_api.id(118237114508579173)
+,p_plugin_attribute_id=>wwv_flow_api.id(118233786106579168)
 ,p_display_sequence=>70
 ,p_display_value=>'7. Reset Group'
 ,p_return_value=>'actions4'
 ,p_is_quick_pick=>true
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115612066842210486)
+ p_id=>wwv_flow_api.id(118237655440579174)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>2
@@ -9922,21 +9924,21 @@ wwv_flow_api.create_plugin_attribute(
 ,p_help_text=>'Choose group position. Start or end of the toolbar group.'
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115612427548210487)
-,p_plugin_attribute_id=>wwv_flow_api.id(115612066842210486)
+ p_id=>wwv_flow_api.id(118238098475579175)
+,p_plugin_attribute_id=>wwv_flow_api.id(118237655440579174)
 ,p_display_sequence=>10
 ,p_display_value=>'Start'
 ,p_return_value=>'F'
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115612950940210488)
-,p_plugin_attribute_id=>wwv_flow_api.id(115612066842210486)
+ p_id=>wwv_flow_api.id(118238562040579175)
+,p_plugin_attribute_id=>wwv_flow_api.id(118237655440579174)
 ,p_display_sequence=>20
 ,p_display_value=>'End'
 ,p_return_value=>'L'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115613405860210489)
+ p_id=>wwv_flow_api.id(118239041129579176)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>3
@@ -9945,14 +9947,14 @@ wwv_flow_api.create_plugin_attribute(
 ,p_attribute_type=>'TEXT'
 ,p_is_required=>true
 ,p_is_translatable=>true
-,p_depending_on_attribute_id=>wwv_flow_api.id(115614609344210492)
+,p_depending_on_attribute_id=>wwv_flow_api.id(118240245033579178)
 ,p_depending_on_has_to_exist=>true
 ,p_depending_on_condition_type=>'EQUALS'
 ,p_depending_on_expression=>'N'
 ,p_help_text=>'Label of a button. You can also use text messages defined in shared components.'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115613846327210491)
+ p_id=>wwv_flow_api.id(118239480090579176)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>4
@@ -9967,7 +9969,7 @@ wwv_flow_api.create_plugin_attribute(
 ,p_help_text=>'Hot or not? :)'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115614264479210491)
+ p_id=>wwv_flow_api.id(118239840524579177)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>5
@@ -9980,7 +9982,7 @@ wwv_flow_api.create_plugin_attribute(
 ,p_help_text=>'Define APEX icon class for a button.'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115614609344210492)
+ p_id=>wwv_flow_api.id(118240245033579178)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>6
@@ -9993,7 +9995,7 @@ wwv_flow_api.create_plugin_attribute(
 ,p_help_text=>'Display only button with icon.'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115615057193210493)
+ p_id=>wwv_flow_api.id(118240641699579178)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>7
@@ -10003,28 +10005,28 @@ wwv_flow_api.create_plugin_attribute(
 ,p_is_required=>true
 ,p_default_value=>'B'
 ,p_is_translatable=>false
-,p_depending_on_attribute_id=>wwv_flow_api.id(115614264479210491)
+,p_depending_on_attribute_id=>wwv_flow_api.id(118239840524579177)
 ,p_depending_on_has_to_exist=>true
 ,p_depending_on_condition_type=>'NOT_NULL'
 ,p_lov_type=>'STATIC'
 ,p_help_text=>'Display position of an icon - before or after label.'
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115615490765210495)
-,p_plugin_attribute_id=>wwv_flow_api.id(115615057193210493)
+ p_id=>wwv_flow_api.id(118241043576579179)
+,p_plugin_attribute_id=>wwv_flow_api.id(118240641699579178)
 ,p_display_sequence=>10
 ,p_display_value=>'Before Label'
 ,p_return_value=>'B'
 );
 wwv_flow_api.create_plugin_attr_value(
- p_id=>wwv_flow_api.id(115615944363210496)
-,p_plugin_attribute_id=>wwv_flow_api.id(115615057193210493)
+ p_id=>wwv_flow_api.id(118241523218579179)
+,p_plugin_attribute_id=>wwv_flow_api.id(118240641699579178)
 ,p_display_sequence=>20
 ,p_display_value=>'After Label'
 ,p_return_value=>'A'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115616405753210497)
+ p_id=>wwv_flow_api.id(118242011026579180)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>8
@@ -10038,7 +10040,7 @@ wwv_flow_api.create_plugin_attribute(
 ,p_help_text=>'HTML button title attribute. Shown on mouse hover.'
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115616827632210499)
+ p_id=>wwv_flow_api.id(118242496296579181)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>9
@@ -10081,7 +10083,7 @@ wwv_flow_api.create_plugin_attribute(
 '</p>'))
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115617261144210500)
+ p_id=>wwv_flow_api.id(118242867685579182)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>10
@@ -10098,7 +10100,7 @@ wwv_flow_api.create_plugin_attribute(
 'This property can be used to disable default IG actions. To do this just set name of default IG action in Action property.'))
 );
 wwv_flow_api.create_plugin_attribute(
- p_id=>wwv_flow_api.id(115617635175210501)
+ p_id=>wwv_flow_api.id(118243264369579182)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_attribute_scope=>'COMPONENT'
 ,p_attribute_sequence=>11
@@ -10158,7 +10160,7 @@ end;
 /
 begin
 wwv_flow_api.create_plugin_file(
- p_id=>wwv_flow_api.id(115618667077210537)
+ p_id=>wwv_flow_api.id(118250921746579211)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_file_name=>'grid.extendToolbar.js'
 ,p_mime_type=>'text/javascript'
@@ -10211,7 +10213,7 @@ end;
 /
 begin
 wwv_flow_api.create_plugin_file(
- p_id=>wwv_flow_api.id(115619040711210539)
+ p_id=>wwv_flow_api.id(118251330597579212)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_file_name=>'grid.extendToolbar.js.map'
 ,p_mime_type=>'application/octet-stream'
@@ -10239,7 +10241,7 @@ end;
 /
 begin
 wwv_flow_api.create_plugin_file(
- p_id=>wwv_flow_api.id(115619450514210540)
+ p_id=>wwv_flow_api.id(118251776891579235)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_file_name=>'grid.extendToolbar.min.js'
 ,p_mime_type=>'text/javascript'
@@ -10303,7 +10305,7 @@ end;
 /
 begin
 wwv_flow_api.create_plugin_file(
- p_id=>wwv_flow_api.id(115619842232210541)
+ p_id=>wwv_flow_api.id(118252113966579236)
 ,p_plugin_id=>wwv_flow_api.id(115607969272210450)
 ,p_file_name=>'grid.extendToolbar.min.js.map'
 ,p_mime_type=>'application/octet-stream'
@@ -10372,7 +10374,7 @@ wwv_flow_api.create_page(
 ,p_autocomplete_on_off=>'OFF'
 ,p_page_template_options=>'#DEFAULT#'
 ,p_last_updated_by=>'LH'
-,p_last_upd_yyyymmddhh24miss=>'20180802195922'
+,p_last_upd_yyyymmddhh24miss=>'20180903090552'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(113713397164556911)
@@ -12131,8 +12133,8 @@ wwv_flow_api.create_page(
 '}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_page_is_public_y_n=>'Y'
-,p_last_updated_by=>'WKB'
-,p_last_upd_yyyymmddhh24miss=>'20180802163113'
+,p_last_updated_by=>'LH'
+,p_last_upd_yyyymmddhh24miss=>'20180903090552'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(114968346670209340)
@@ -13082,8 +13084,8 @@ wwv_flow_api.create_page(
 '}'))
 ,p_page_template_options=>'#DEFAULT#'
 ,p_page_is_public_y_n=>'Y'
-,p_last_updated_by=>'WKB'
-,p_last_upd_yyyymmddhh24miss=>'20180802134127'
+,p_last_updated_by=>'LH'
+,p_last_upd_yyyymmddhh24miss=>'20180903090553'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(116654257632146812)
@@ -14039,6 +14041,7 @@ wwv_flow_api.create_page_da_action(
 ,p_attribute_03=>unistr('\65B0\8BBE\90E8\4F4D')
 ,p_attribute_04=>'Y'
 ,p_attribute_06=>'N'
+,p_attribute_07=>'B'
 ,p_attribute_09=>'add_by'
 ,p_attribute_10=>'N'
 ,p_attribute_11=>'N'
@@ -14664,8 +14667,8 @@ wwv_flow_api.create_page(
 ,p_step_template=>wwv_flow_api.id(114587358033175426)
 ,p_page_template_options=>'#DEFAULT#'
 ,p_page_is_public_y_n=>'Y'
-,p_last_updated_by=>'WKB'
-,p_last_upd_yyyymmddhh24miss=>'20180817160940'
+,p_last_updated_by=>'LH'
+,p_last_upd_yyyymmddhh24miss=>'20180903090553'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(116243504548299143)
@@ -16177,8 +16180,8 @@ wwv_flow_api.create_page(
 ,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
 ,p_autocomplete_on_off=>'OFF'
 ,p_page_template_options=>'#DEFAULT#'
-,p_last_updated_by=>'WKB'
-,p_last_upd_yyyymmddhh24miss=>'20180802134155'
+,p_last_updated_by=>'LH'
+,p_last_upd_yyyymmddhh24miss=>'20180903090553'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(116095038676540016)
@@ -16906,8 +16909,8 @@ wwv_flow_api.create_page(
 ,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
 ,p_autocomplete_on_off=>'OFF'
 ,p_page_template_options=>'#DEFAULT#'
-,p_last_updated_by=>'WKB'
-,p_last_upd_yyyymmddhh24miss=>'20180802150040'
+,p_last_updated_by=>'LH'
+,p_last_upd_yyyymmddhh24miss=>'20180903090553'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(229394114678438485)
@@ -18995,23 +18998,6 @@ wwv_flow_api.create_page_process(
 ':P9999_USERNAME := apex_authentication.get_login_username_cookie;',
 ':P9999_REMEMBER := case when :P9999_USERNAME is not null then ''Y'' end;'))
 );
-end;
-/
-prompt --application/deployment/definition
-begin
-wwv_flow_api.create_install(
- p_id=>wwv_flow_api.id(117573099176180059)
-);
-end;
-/
-prompt --application/deployment/checks
-begin
-null;
-end;
-/
-prompt --application/deployment/buildoptions
-begin
-null;
 end;
 /
 prompt --application/end_environment
