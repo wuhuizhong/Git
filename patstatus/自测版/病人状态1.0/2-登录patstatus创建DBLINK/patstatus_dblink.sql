@@ -1,2 +1,0 @@
---需要修改IP地址等信息
-create public database link to_zlhis connect to zlhis identified by HIS using '(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 192.168.0.43)(PORT = 1521))(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = his)))';
